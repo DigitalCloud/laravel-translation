@@ -103,17 +103,24 @@ class Database extends Translation implements DriverInterface
             $this->addLanguage($language);
         }
 
-        Language::where('language', $language)
-            ->first()
-            ->translations()
-            ->updateOrCreate([
-                'group' => $group,
-                'key' => $key,
-            ], [
+        $translation=Translation::whereGroup($group)->whereKey($key)->first();
+        if(!$translation)
+            Translation::create([
                 'group' => $group,
                 'key' => $key,
                 'value' => $value,
             ]);
+//         Language::where('language', $language)
+//             ->first()
+//             ->translations()
+//             ->updateOrCreate([
+//                 'group' => $group,
+//                 'key' => $key,
+//             ], [
+//                 'group' => $group,
+//                 'key' => $key,
+//                 'value' => $value,
+//             ]);
     }
 
     /**
@@ -129,17 +136,24 @@ class Database extends Translation implements DriverInterface
         if (! $this->languageExists($language)) {
             $this->addLanguage($language);
         }
-
-        Language::where('language', $language)
-            ->first()
-            ->translations()
-            ->updateOrCreate([
-                'group' => $vendor,
-                'key' => $key,
-            ], [
+        
+        $translation=Translation::whereNull('group')->whereKey($key)->first();
+        if(!$translation)
+            Translation::create([
                 'key' => $key,
                 'value' => $value,
-        ]);
+            ]);
+
+//         Language::where('language', $language)
+//             ->first()
+//             ->translations()
+//             ->updateOrCreate([
+//                 'group' => $vendor,
+//                 'key' => $key,
+//             ], [
+//                 'key' => $key,
+//                 'value' => $value,
+//         ]);
     }
 
     /**
